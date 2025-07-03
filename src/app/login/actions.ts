@@ -1,4 +1,3 @@
-
 'use server';
 
 import { redirect } from 'next/navigation';
@@ -22,6 +21,6 @@ export async function login(formData: FormData) {
     redirect('/dashboard');
   } else {
     const { message } = await res.json();
-    redirect(`/login?error=${message}`);
+    redirect(`/login?error=${message}&email=${email}`);
   }
 }
