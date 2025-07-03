@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
@@ -46,7 +45,7 @@ export async function middleware(req: NextRequest) {
   // If user is not authenticated
   if (!token) {
     // If unauthenticated user tries to access dashboard, redirect to login
-    if (pathname === '/dashboard') {
+    if (pathname.startsWith('/dashboard') || pathname.startsWith('/create-event') || pathname.startsWith('/my-events') || pathname.startsWith('/profile')) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
     return NextResponse.next();
@@ -54,5 +53,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/','/dashboard', '/login', '/register'],
+  matcher: ['/','/dashboard/:path*', '/login', '/register', '/create-event', '/my-events', '/profile'],
 };
