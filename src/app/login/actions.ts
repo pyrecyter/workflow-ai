@@ -17,7 +17,7 @@ export async function login(formData: FormData) {
 
   if (res.ok) {
     const { token } = await res.json();
-    cookies().set('token', token);
+    (await cookies()).set('token', token);
     redirect('/dashboard');
   } else {
     const { message } = await res.json();

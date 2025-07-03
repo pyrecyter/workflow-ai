@@ -3,34 +3,21 @@ import { jwtVerify } from 'jose';
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
+const publicRoutes = ['/', '/login', '/register'];
+
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get('token')?.value;
-
   const { pathname } = req.nextUrl;
 
-  // Handle root path redirection
-  if (pathname === '/') {
-    if (token) {
-      try {
-        await jwtVerify(token, secret);
-        return NextResponse.redirect(new URL('/dashboard', req.url));
-      } catch (error) {
-        // If token is invalid, clear cookie and redirect to login
-        const response = NextResponse.redirect(new URL('/login', req.url));
-        response.cookies.delete('token');
-        return response;
-      }
-    } else {
-      return NextResponse.redirect(new URL('/login', req.url));
-    }
-  }
+  // Check if the current path is a public route
+  const isPublicRoute = publicRoutes.includes(pathname);
 
   // If user is authenticated
   if (token) {
     try {
       await jwtVerify(token, secret);
-      // If authenticated user tries to access login or register, redirect to dashboard
-      if (pathname === '/login' || pathname === '/register') {
+      // If authenticated user tries to access a public route, redirect to dashboard
+      if (isPublicRoute) {
         return NextResponse.redirect(new URL('/dashboard', req.url));
       }
       return NextResponse.next();
@@ -44,8 +31,8 @@ export async function middleware(req: NextRequest) {
 
   // If user is not authenticated
   if (!token) {
-    // If unauthenticated user tries to access dashboard, redirect to login
-    if (pathname.startsWith('/dashboard') || pathname.startsWith('/create-event') || pathname.startsWith('/my-events') || pathname.startsWith('/profile')) {
+    // If unauthenticated user tries to access a protected route, redirect to login
+    if (!isPublicRoute) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
     return NextResponse.next();
@@ -53,5 +40,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/','/dashboard/:path*', '/login', '/register', '/create-event', '/my-events', '/profile'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };
