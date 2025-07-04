@@ -1,12 +1,11 @@
-
-import { Db, MongoClient } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 
 const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017';
 const client = new MongoClient(uri);
 
 let db: Db;
 
-async function connectToDatabase() {
+async function connectToDatabase(): Promise<Db> {
   if (db) {
     return db;
   }

@@ -1,7 +1,9 @@
-export default function DashboardPage() {
+import EventsList from '@/components/EventsList';
+
+export default async function DashboardPage() {
   return (
-    <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-      <p className="text-center text-gray-700">Welcome to your dashboard!</p>
+    <div className="w-full p-8 space-y-6 bg-white rounded-lg shadow-md">
+      <EventsList />
     </div>
   );
 }

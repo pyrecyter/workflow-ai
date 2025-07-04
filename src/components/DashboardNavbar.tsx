@@ -2,12 +2,15 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { logout } from '@/app/(dashboard)/dashboard/actions';
 import { usePathname } from 'next/navigation';
+import CreateEventModal from './CreateEventModal';
 
 export default function DashboardNavbar() {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isCreateEventModalOpen, setIsCreateEventModalOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
 
   const toggleProfileMenu = () => {
@@ -18,23 +21,36 @@ export default function DashboardNavbar() {
     `px-3 py-2 rounded-md text-sm font-medium ${pathname === path ? 'bg-gray-200 text-gray-900' : 'text-gray-700 hover:bg-gray-100'}`
   );
 
-  const handleLogout = async () => {
-    setIsProfileMenuOpen(false);
-    await logout();
-  }
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768); // Tailwind's md breakpoint is 768px
+    };
+
+    handleResize(); // Set initial state
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
-    <nav className="bg-white shadow-md p-4 flex justify-between items-center">
+    <nav className="z-50 bg-gray-50 shadow-md p-4 flex justify-between items-center h-16">
       <div className="flex items-center space-x-4">
         <Link href="/dashboard" className="text-2xl font-extrabold text-blue-600">
           Events-SL
         </Link>
-        <Link href="/create-event" className={navLinkClasses('/create-event')}>
-          Create Event
-        </Link>
-        <Link href="/my-events" className={navLinkClasses('/my-events')}>
-          My Events
-        </Link>
+        {!isMobile && (
+          <>
+            <button
+              onClick={() => setIsCreateEventModalOpen(true)}
+              className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100"
+            >
+              Create Event
+            </button>
+            <Link href="/my-events" className={navLinkClasses('/my-events')}>
+              My Events
+            </Link>
+          </>
+        )}
       </div>
 
       <div className="relative">
@@ -61,6 +77,26 @@ export default function DashboardNavbar() {
 
         {isProfileMenuOpen && (
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+            {isMobile && (
+              <>
+                <button
+                  onClick={() => {
+                    setIsCreateEventModalOpen(true);
+                    setIsProfileMenuOpen(false);
+                  }}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Create Event
+                </button>
+                <Link
+                  href="/my-events"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  onClick={() => setIsProfileMenuOpen(false)}
+                >
+                  My Events
+                </Link>
+              </>
+            )}
             <Link
               href="/profile"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -68,16 +104,20 @@ export default function DashboardNavbar() {
             >
               Profile
             </Link>
+            <form action={logout}>
               <button
                 type="submit"
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                onClick={handleLogout}
               >
                 Logout
               </button>
+            </form>
           </div>
         )}
       </div>
+      {isCreateEventModalOpen && (
+        <CreateEventModal onClose={() => setIsCreateEventModalOpen(false)} />
+      )}
     </nav>
   );
 }

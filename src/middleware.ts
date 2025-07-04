@@ -1,3 +1,5 @@
+
+
 import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify } from 'jose';
 
@@ -40,5 +42,15 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - api (API routes)
+     * - any file with an extension (e.g., .js, .css, .png, .jpg)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|api|.*\..*).*)',
+  ],
 };

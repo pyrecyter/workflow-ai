@@ -1,7 +1,10 @@
-export default function FeedPage() {
+
+import EventsList from '@/components/EventsList';
+
+export default async function FeedPage() {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 text-gray-900">
-      <h1 className="text-2xl font-bold">Feed Page</h1>
+    <div className="w-full p-8 space-y-6 bg-white rounded-lg shadow-md">
+      <EventsList />
     </div>
   );
 }

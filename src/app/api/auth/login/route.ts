@@ -8,7 +8,7 @@ import { loginSchema } from '@/utils/validator';
 export async function POST(req: NextRequest) {
   try {
     const db = await connectToDatabase();
-    const users = db.collection('user');
+    const users = db.collection('users');
 
     const body = await req.json();
     const { error } = loginSchema.validate(body);
