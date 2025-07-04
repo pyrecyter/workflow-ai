@@ -1,11 +1,11 @@
-
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { cookies } from 'next/headers';
-import { jwtVerify } from 'jose';
-import DashboardNavbar from '@/components/DashboardNavbar';
-import AuthNavbar from '@/components/AuthNavbar';
+import { cookies } from "next/headers";
+import { jwtVerify } from "jose";
+import DashboardNavbar from "@/components/DashboardNavbar";
+import AuthNavbar from "@/components/AuthNavbar";
+import { SnackbarProvider } from "@/context/SnackbarContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,9 +16,9 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode; }>) {
+}: Readonly<{ children: React.ReactNode }>) {
   const cookieStore = await cookies();
-  const token = cookieStore.get('token')?.value;
+  const token = cookieStore.get("token")?.value;
   let isAuthenticated = false;
 
   if (token) {
@@ -34,11 +34,14 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {isAuthenticated ? <DashboardNavbar /> : <AuthNavbar />}
-        <hr className="h-0.5 border-t-0 bg-neutral-100 dark:bg-white/10" />
-        <main className="bg-gray-100 text-gray-900 min-h-screen flex-grow">
-          {children}
-        </main>
+        <SnackbarProvider>
+          {isAuthenticated ? <DashboardNavbar /> : <AuthNavbar />}
+          <hr className="h-0.5 border-t-0 bg-neutral-100 dark:bg-white/10" />
+
+          <main className="bg-gray-100 text-gray-900 mt-[var(--navbar-height)] min-h-screen flex-grow">
+            {children}
+          </main>
+        </SnackbarProvider>
       </body>
     </html>
   );
