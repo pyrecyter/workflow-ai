@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function AuthNavbar() {
   return (
-    <nav className="z-50 bg-gray-50 shadow-md p-4 flex justify-between items-center h-16">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md p-4 flex justify-between items-center h-16">
       <Link href="/" className="text-2xl font-extrabold text-blue-600">
         Events-SL
       </Link>

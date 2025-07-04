@@ -2,11 +2,11 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import Snackbar from '@/components/Snackbar';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { login } from '@/app/login/actions';
 import { useFormStatus } from 'react-dom';
+import { useSnackbar } from '@/hooks/useSnackbar';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -27,17 +27,13 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
   const initialEmail = searchParams.get('email') || '';
-  const [showSnackbar, setShowSnackbar] = useState(false);
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (error) {
-      setShowSnackbar(true);
+      showSnackbar(error, 'error');
     }
-  }, [error]);
-
-  const handleCloseSnackbar = () => {
-    setShowSnackbar(false);
-  };
+  }, [error, showSnackbar]);
 
   return (
     <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
@@ -72,9 +68,6 @@ export default function LoginForm() {
           Register here
         </Link>
       </p>
-      {showSnackbar && (
-        <Snackbar message={error as string} type="error" onClose={handleCloseSnackbar} />
-      )}
     </div>
   );
 }

@@ -1,14 +1,13 @@
-
 'use client';
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useState, useCallback } from 'react';
 import Snackbar from '@/components/Snackbar';
 
 interface SnackbarContextType {
   showSnackbar: (message: string, type: 'success' | 'error', duration?: number) => void;
 }
 
-const SnackbarContext = createContext<SnackbarContextType | undefined>(undefined);
+export const SnackbarContext = createContext<SnackbarContextType | undefined>(undefined);
 
 export function SnackbarProvider({ children }: { children: React.ReactNode }) {
   const [snackbarState, setSnackbarState] = useState<{ message: string; type: 'success' | 'error'; duration?: number; key: number } | null>(null);
@@ -35,12 +34,4 @@ export function SnackbarProvider({ children }: { children: React.ReactNode }) {
       )}
     </SnackbarContext.Provider>
   );
-}
-
-export function useSnackbar() {
-  const context = useContext(SnackbarContext);
-  if (context === undefined) {
-    throw new Error('useSnackbar must be used within a SnackbarProvider');
-  }
-  return context;
 }

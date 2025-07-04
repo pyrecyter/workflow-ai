@@ -1,11 +1,11 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import Snackbar from '@/components/Snackbar';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { register } from '@/app/register/actions';
 import { useFormStatus } from 'react-dom';
+import { useSnackbar } from '@/hooks/useSnackbar';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -28,17 +28,13 @@ export default function RegisterForm() {
   const initialFirstName = searchParams.get('firstName') || '';
   const initialLastName = searchParams.get('lastName') || '';
   const initialEmail = searchParams.get('email') || '';
-  const [showSnackbar, setShowSnackbar] = useState(false);
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (error) {
-      setShowSnackbar(true);
+      showSnackbar(error, 'error');
     }
-  }, [error]);
-
-  const handleCloseSnackbar = () => {
-    setShowSnackbar(false);
-  };
+  }, [error, showSnackbar]);
 
   return (
     <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
@@ -47,8 +43,8 @@ export default function RegisterForm() {
         <div>
           <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
           <input
-            id="firstName"
             type="text"
+            id="firstName"
             name="firstName"
             defaultValue={initialFirstName}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
@@ -58,8 +54,8 @@ export default function RegisterForm() {
         <div>
           <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name</label>
           <input
-            id="lastName"
             type="text"
+            id="lastName"
             name="lastName"
             defaultValue={initialLastName}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
@@ -69,8 +65,8 @@ export default function RegisterForm() {
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
           <input
-            id="email"
             type="email"
+            id="email"
             name="email"
             defaultValue={initialEmail}
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
@@ -80,9 +76,19 @@ export default function RegisterForm() {
         <div>
           <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
           <input
-            id="password"
             type="password"
+            id="password"
             name="password"
+            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
             required
           />
@@ -95,9 +101,6 @@ export default function RegisterForm() {
           Login here
         </Link>
       </p>
-      {showSnackbar && (
-        <Snackbar message={error as string} type="error" onClose={handleCloseSnackbar} />
-      )}
     </div>
   );
 }

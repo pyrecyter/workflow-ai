@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
@@ -14,7 +13,12 @@ async function verifyTokenAndGetUserId(req: NextRequest) {
   }
   try {
     const { payload } = await jwtVerify(token, secret);
-    return { userId: payload.userId, response: null };
+    // Ensure userId is a string and a valid ObjectId string
+    const userId = String(payload.userId);
+    if (!ObjectId.isValid(userId)) {
+      return { userId: null, response: NextResponse.json({ message: 'Invalid token payload: userId is not a valid ObjectId' }, { status: 401 }) };
+    }
+    return { userId, response: null };
   } catch (error) {
     return { userId: null, response: NextResponse.json({ message: 'Invalid token' }, { status: 401 }) };
   }

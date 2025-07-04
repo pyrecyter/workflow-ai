@@ -1,9 +1,8 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
-import { useSnackbar } from '@/context/SnackbarContext';
+import { useSnackbar } from '@/hooks/useSnackbar';
 import { revalidateEvents } from '@/app/api/events/actions';
 
 interface CreateEventModalProps {

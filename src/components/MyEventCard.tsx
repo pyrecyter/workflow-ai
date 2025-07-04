@@ -1,3 +1,4 @@
+
 'use client';
 
 import EventCard from './EventCard';
@@ -5,7 +6,7 @@ import { useState, useCallback } from 'react';
 import CreateEventModal from './CreateEventModal';
 import { revalidateMyEvents } from '@/app/(dashboard)/my-events/actions';
 import ConfirmationModal from './ConfirmationModal';
-import { useSnackbar } from '@/context/SnackbarContext';
+import { useSnackbar } from '@/hooks/useSnackbar';
 
 interface MyEventCardProps {
   event: {

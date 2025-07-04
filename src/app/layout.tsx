@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
-import DashboardNavbar from "@/components/DashboardNavbar";
 import AuthNavbar from "@/components/AuthNavbar";
 import { SnackbarProvider } from "@/context/SnackbarContext";
 
@@ -35,10 +34,13 @@ export default async function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <SnackbarProvider>
-          {isAuthenticated ? <DashboardNavbar /> : <AuthNavbar />}
-          <hr className="h-0.5 border-t-0 bg-neutral-100 dark:bg-white/10" />
-
           <main className="bg-gray-100 text-gray-900 mt-[var(--navbar-height)] min-h-screen flex-grow">
+            {!isAuthenticated && (
+              <>
+                <AuthNavbar />
+                <hr className="h-0.5 border-t-0 bg-neutral-100 dark:bg-white/10 mb-15" />
+              </>
+            )}
             {children}
           </main>
         </SnackbarProvider>
