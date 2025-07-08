@@ -1,33 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import { eventSchema } from "@/utils/validator";
-import { jwtVerify } from "jose";
-
-const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 
 export async function POST(req: NextRequest) {
   try {
-    const token = req.headers.get("authorization")?.split(" ")[1];
-
-    if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    let decodedToken;
-    try {
-      const { payload } = await jwtVerify(token, secret);
-      decodedToken = payload;
-    } catch {
-      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
-    }
-
     const db = await connectToDatabase();
     const eventsCollection = db.collection("events");
 
     const body = await req.json();
 
     // Add userId from decoded token to the body for validation
-    body.userId = decodedToken.userId;
+    body.userId = req.headers.get("userId");
 
     const { error } = eventSchema.validate(body);
 

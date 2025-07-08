@@ -11,6 +11,11 @@ export async function middleware(req: NextRequest) {
 
   // Check if the current path is an API route
   if (pathname.startsWith("/api")) {
+    // if the request is get from /events ignore the token
+    if (pathname === "/api/events" && req.method === "GET") {
+      return NextResponse.next();
+    }
+
     const apiToken = req.headers.get("authorization")?.split(" ")[1];
     if (!apiToken) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -55,8 +60,7 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     "/((?!_next/static|_next/image|favicon.ico|.*..*).*)'",
-    "/api/events/my-events",
-    "/api/events/:id",
+    "/api/events/:path*",
     "/api/profile",
   ],
 };
