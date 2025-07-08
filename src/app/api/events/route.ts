@@ -47,8 +47,16 @@ export async function GET() {
     const db = await connectToDatabase();
     const eventsCollection = db.collection("events");
 
+    const today = new Date();
+    const todayDateString = today.toISOString().split("T")[0];
+
     const events = await eventsCollection
-      .find()
+      .find({
+        $or: [
+          { date: { $gt: todayDateString } }, // Events after today
+          { date: todayDateString }, // All events on today's date
+        ],
+      })
       .sort({ date: 1, time: 1 })
       .toArray();
 

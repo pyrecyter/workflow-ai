@@ -6,7 +6,6 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 const publicRoutes = ["/", "/login", "/register", "/events/:path*"];
 
 export async function middleware(req: NextRequest) {
-  console.log("called!!!!!!!!!");
   const token = req.cookies.get("token")?.value;
   const { pathname } = req.nextUrl;
 
