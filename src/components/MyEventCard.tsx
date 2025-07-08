@@ -8,6 +8,8 @@ import ConfirmationModal from "./ConfirmationModal";
 import { useSnackbar } from "@/hooks/useSnackbar";
 import { IEvent } from "@/types/events";
 
+import { capitalizeWords } from "@/utils/textFormatter";
+
 interface MyEventCardProps {
   event: IEvent;
 }
@@ -53,11 +55,11 @@ export default function MyEventCard({ event }: MyEventCardProps) {
 
   return (
     <div className="relative">
-      <EventCard event={event} />
+      <EventCard event={{ ...event, name: capitalizeWords(event.name) }} />
       <div className="absolute top-2 right-2 flex space-x-2">
         <button
           onClick={() => setIsEditModalOpen(true)}
-          className="bg-blue-500 text-white p-2 rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="bg-blue-500 text-white p-2 rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 flex items-center justify-center"
           title="Edit Event"
         >
           <svg
@@ -71,7 +73,7 @@ export default function MyEventCard({ event }: MyEventCardProps) {
         </button>
         <button
           onClick={() => setIsConfirmModalOpen(true)}
-          className="bg-red-500 text-white p-2 rounded-full shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          className="bg-red-500 text-white p-2 rounded-full shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 flex items-center justify-center"
           title="Delete Event"
         >
           <svg

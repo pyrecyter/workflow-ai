@@ -3,6 +3,32 @@ import connectToDatabase from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { eventSchema } from "@/utils/validator";
 
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const db = await connectToDatabase();
+    const eventsCollection = db.collection("events");
+
+    const { id } = await params;
+
+    const event = await eventsCollection.findOne({ _id: new ObjectId(id) });
+
+    if (!event) {
+      return NextResponse.json({ message: "Event not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(event, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching event:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
