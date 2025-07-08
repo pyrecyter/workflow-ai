@@ -1,8 +1,9 @@
+
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useSnackbar } from '@/hooks/useSnackbar';
-import { fetchUserProfile } from '@/app/api/profile/actions'; // Server Action
+import { fetchUserProfile } from '@/app/api/profile/actions';
 
 interface User {
   _id: string;
@@ -22,7 +23,7 @@ export const UserContext = createContext<UserContextType | undefined>(undefined)
 
 export function UserProvider({ children, initialUser }: { children: React.ReactNode; initialUser: User | null }) {
   const [user, setUser] = useState<User | null>(initialUser);
-  const [loading, setLoading] = useState<boolean>(false); 
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { showSnackbar } = useSnackbar();
 
@@ -44,9 +45,6 @@ export function UserProvider({ children, initialUser }: { children: React.ReactN
     fetchAndSetUser();
   }, [fetchAndSetUser]);
 
-  // No initial fetch in useEffect if initialUser is provided by server component
-  // This useEffect is primarily for cases where initialUser is null (e.g., unauthenticated user)
-  // or if the component is mounted without initialUser (e.g., client-side navigation to a route that doesn't have a server component fetching user)
   useEffect(() => {
     if (!initialUser && !user && !loading) {
       fetchAndSetUser();

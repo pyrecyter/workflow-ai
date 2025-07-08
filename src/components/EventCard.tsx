@@ -1,3 +1,4 @@
+
 'use client';
 
 interface EventCardProps {
@@ -17,9 +18,6 @@ interface EventCardProps {
 
 export default function EventCard({ event }: EventCardProps) {
   const defaultImageUrl = '/events.png';
-
-  console.log('Event Image URL:', event.imageUrl);
-  console.log('Default Image URL:', defaultImageUrl);
 
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
