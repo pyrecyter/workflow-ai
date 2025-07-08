@@ -1,56 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
-import { jwtVerify } from "jose";
 import { eventSchema } from "@/utils/validator";
-
-const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-
-async function verifyTokenAndGetUserId(req: NextRequest) {
-  const token = req.headers.get("authorization")?.split(" ")[1];
-  if (!token) {
-    return {
-      userId: null,
-      response: NextResponse.json({ message: "Unauthorized" }, { status: 401 }),
-    };
-  }
-  try {
-    const { payload } = await jwtVerify(token, secret);
-    // Ensure userId is a string and a valid ObjectId string
-    const userId = String(payload.userId);
-    if (!ObjectId.isValid(userId)) {
-      return {
-        userId: null,
-        response: NextResponse.json(
-          { message: "Invalid token payload: userId is not a valid ObjectId" },
-          { status: 401 }
-        ),
-      };
-    }
-    return { userId, response: null };
-  } catch {
-    return {
-      userId: null,
-      response: NextResponse.json(
-        { message: "Invalid token" },
-        { status: 401 }
-      ),
-    };
-  }
-}
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId, response } = await verifyTokenAndGetUserId(req);
-    if (!userId) return response;
-
+    const userId = req.headers.get("userId");
     const db = await connectToDatabase();
     const eventsCollection = db.collection("events");
 
-    const { id } = params;
+    const { id } = await params;
     const body = await req.json();
 
     // Add userId to body for validation, ensuring user can only update their own events
@@ -91,16 +53,14 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { userId, response } = await verifyTokenAndGetUserId(req);
-    if (!userId) return response;
-
+    const userId = req.headers.get("userId");
     const db = await connectToDatabase();
     const eventsCollection = db.collection("events");
 
-    const { id } = params;
+    const { id } = await params;
 
     const result = await eventsCollection.deleteOne({
       _id: new ObjectId(id),

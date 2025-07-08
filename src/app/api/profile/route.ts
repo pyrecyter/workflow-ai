@@ -1,58 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
-import { jwtVerify } from "jose";
 import { profileUpdateSchema, passwordChangeSchema } from "@/utils/validator";
 import bcrypt from "bcryptjs";
 import { ObjectId } from "mongodb";
 
-const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-
-async function verifyTokenAndGetUserId(req: NextRequest) {
-  const token = req.headers.get("authorization")?.split(" ")[1];
-  if (!token) {
-    return {
-      userId: null,
-      response: NextResponse.json({ message: "Unauthorized" }, { status: 401 }),
-    };
-  }
-  try {
-    const { payload } = await jwtVerify(token, secret);
-    const userIdString = String(payload.userId);
-    if (!ObjectId.isValid(userIdString)) {
-      return {
-        userId: null,
-        response: NextResponse.json(
-          {
-            message:
-              "Invalid token payload: userId is not a valid ObjectId string",
-          },
-          { status: 401 }
-        ),
-      };
-    }
-    const userId = new ObjectId(userIdString); // Convert to ObjectId
-    return { userId, response: null };
-  } catch {
-    return {
-      userId: null,
-      response: NextResponse.json(
-        { message: "Invalid token" },
-        { status: 401 }
-      ),
-    };
-  }
-}
-
 export async function GET(req: NextRequest) {
   try {
-    const { userId, response } = await verifyTokenAndGetUserId(req);
-    if (!userId) return response;
-
+    const userId = req.headers.get("userId");
     const db = await connectToDatabase();
     const usersCollection = db.collection("users"); // Corrected to 'users'
 
     const user = await usersCollection.findOne(
-      { _id: userId },
+      { _id: new ObjectId(userId as string) },
       { projection: { password: 0 } }
     );
 
@@ -72,9 +31,7 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const { userId, response } = await verifyTokenAndGetUserId(req);
-    if (!userId) return response;
-
+    const userId = req.headers.get("userId");
     const db = await connectToDatabase();
     const usersCollection = db.collection("users"); // Corrected to 'users'
 
@@ -93,7 +50,7 @@ export async function PUT(req: NextRequest) {
     // Check if email is being updated and if it already exists
     if (email) {
       const existingUser = await usersCollection.findOne({ email });
-      if (existingUser && existingUser._id.toString() !== userId.toString()) {
+      if (existingUser && existingUser._id.toString() !== userId) {
         // Compare ObjectId to string
         return NextResponse.json(
           { message: "Email already in use" },
@@ -104,7 +61,7 @@ export async function PUT(req: NextRequest) {
     }
 
     const result = await usersCollection.updateOne(
-      { _id: userId },
+      { _id: new ObjectId(userId as string) },
       { $set: { ...updateData, updatedAt: new Date() } }
     );
 
@@ -127,9 +84,7 @@ export async function PUT(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const { userId, response } = await verifyTokenAndGetUserId(req);
-    if (!userId) return response;
-
+    const userId = req.headers.get("userId");
     const db = await connectToDatabase();
     const usersCollection = db.collection("users"); // Corrected to 'users'
 
@@ -145,7 +100,9 @@ export async function PATCH(req: NextRequest) {
 
     const { currentPassword, newPassword } = body;
 
-    const user = await usersCollection.findOne({ _id: userId });
+    const user = await usersCollection.findOne({
+      _id: new ObjectId(userId as string),
+    });
 
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
@@ -165,7 +122,7 @@ export async function PATCH(req: NextRequest) {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     await usersCollection.updateOne(
-      { _id: userId },
+      { _id: new ObjectId(userId as string) },
       { $set: { password: hashedPassword, updatedAt: new Date() } }
     );
 

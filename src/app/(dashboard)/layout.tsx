@@ -1,6 +1,7 @@
 import { UserProvider } from "@/context/UserContext";
 import { fetchUserProfile } from "@/app/api/profile/actions";
 import DashboardNavbar from "@/components/DashboardNavbar";
+import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({
   children,
@@ -9,11 +10,9 @@ export default async function DashboardLayout({
 }) {
   const { user: initialUser, error } = await fetchUserProfile();
 
-  // Handle error if user is not found or unauthorized
   if (error) {
-    // You might want to redirect to login or show a global error page here
-    // For now, we'll just pass null user and let UserProvider handle it
     console.error("Error fetching initial user in DashboardLayout:", error);
+    redirect("/login");
   }
 
   return (

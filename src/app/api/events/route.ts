@@ -65,7 +65,7 @@ export async function GET() {
     const eventsCollection = db.collection("events");
 
     const events = await eventsCollection
-      .find({})
+      .find()
       .sort({ date: 1, time: 1 })
       .toArray();
 
