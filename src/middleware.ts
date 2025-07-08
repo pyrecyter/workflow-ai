@@ -6,6 +6,7 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET);
 const publicRoutes = ["/", "/login", "/register", "/events/:path*"];
 
 export async function middleware(req: NextRequest) {
+  console.log("called!!!!!!!!!");
   const token = req.cookies.get("token")?.value;
   const { pathname } = req.nextUrl;
 
@@ -75,7 +76,7 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    "/((?!_next/static|_next/image|favicon.ico).*)",
+    "/((?!_next/static|_next/image|api/|favicon.ico).*)",
     // API routes that need authentication/middleware processing
     "/api/events/:path*",
     "/api/profile",

@@ -118,8 +118,28 @@ export default async function EventDetailPage({
             href={event.mapLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 text-center bg-green-600 text-white py-3 px-6 rounded-lg text-lg font-medium hover:bg-green-700 transition duration-300"
+            className="flex-1 text-center bg-green-600 text-white py-3 px-6 rounded-lg text-lg font-medium hover:bg-green-700 transition duration-300 flex items-center justify-center"
           >
+            <svg
+              className="w-6 h-6 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              ></path>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              ></path>
+            </svg>
             View Map
           </a>
         )}
@@ -128,8 +148,22 @@ export default async function EventDetailPage({
             href={event.ticketLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 text-center bg-purple-600 text-white py-3 px-6 rounded-lg text-lg font-medium hover:bg-purple-700 transition duration-300"
+            className="flex-1 text-center bg-purple-600 text-white py-3 px-6 rounded-lg text-lg font-medium hover:bg-purple-700 transition duration-300 flex items-center justify-center"
           >
+            <svg
+              className="w-6 h-6 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M15 5v2m0 4v2m0 4v2M9 9V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2l2 2v-2h2a2 2 0 002-2V9a2 2 0 002-2h-2z"
+              ></path>
+            </svg>
             Buy Tickets
           </a>
         )}
