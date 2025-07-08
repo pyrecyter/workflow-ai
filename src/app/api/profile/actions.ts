@@ -48,11 +48,12 @@ export async function fetchUserProfile() {
       },
       error: null,
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching user profile in action:", error);
     return {
       user: null,
-      error: error.message || "Failed to fetch user profile",
+      error:
+        error instanceof Error ? error.message : "Failed to fetch user profile",
     };
   }
 }

@@ -1,5 +1,5 @@
-
-'use client';
+/* eslint-disable @next/next/no-img-element */
+"use client";
 
 interface EventCardProps {
   event: {
@@ -17,17 +17,32 @@ interface EventCardProps {
 }
 
 export default function EventCard({ event }: EventCardProps) {
-  const defaultImageUrl = '/events.png';
+  const defaultImageUrl = "/events.png";
+
+  console.log("Event Image URL:", event.imageUrl);
+  console.log("Default Image URL:", defaultImageUrl);
 
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105">
-      <img src={event.imageUrl || defaultImageUrl} alt={event.name} className="w-full h-48 object-cover" />
+      <img
+        src={event.imageUrl || defaultImageUrl}
+        alt={event.name}
+        className="w-full h-48 object-cover"
+      />
       <div className="p-4">
         <h3 className="text-xl font-bold text-gray-800 mb-2">{event.name}</h3>
-        <p className="text-gray-600 text-sm mb-1"><strong>Venue:</strong> {event.venue}</p>
-        <p className="text-gray-600 text-sm mb-1"><strong>Date:</strong> {event.date}</p>
-        <p className="text-gray-600 text-sm mb-2"><strong>Time:</strong> {event.time}</p>
-        <p className="text-gray-700 text-base mb-4 line-clamp-3">{event.description}</p>
+        <p className="text-gray-600 text-sm mb-1">
+          <strong>Venue:</strong> {event.venue}
+        </p>
+        <p className="text-gray-600 text-sm mb-1">
+          <strong>Date:</strong> {event.date}
+        </p>
+        <p className="text-gray-600 text-sm mb-2">
+          <strong>Time:</strong> {event.time}
+        </p>
+        <p className="text-gray-700 text-base mb-4 line-clamp-3">
+          {event.description}
+        </p>
 
         {event.contacts && event.contacts.length > 0 && (
           <div className="mb-4">

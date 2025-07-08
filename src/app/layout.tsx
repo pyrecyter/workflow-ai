@@ -25,7 +25,7 @@ export default async function RootLayout({
       const secret = new TextEncoder().encode(process.env.JWT_SECRET);
       await jwtVerify(token, secret);
       isAuthenticated = true;
-    } catch (error) {
+    } catch {
       isAuthenticated = false;
     }
   }
