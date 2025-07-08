@@ -22,7 +22,7 @@ interface EventCardProps {
 }
 
 export default function EventCard({ event }: EventCardProps) {
-  const defaultImageUrl = "/events.png";
+  const defaultImageUrl = "/images/events.png";
   const router = useRouter();
   const { user } = useUser();
 

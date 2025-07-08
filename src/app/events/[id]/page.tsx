@@ -20,7 +20,7 @@ export default async function EventDetailPage({
     );
   }
 
-  const defaultImageUrl = "/events.png";
+  const defaultImageUrl = "/images/events.png";
 
   return (
     <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-lg mt-10">
